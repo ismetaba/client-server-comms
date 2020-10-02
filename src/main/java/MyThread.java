@@ -14,17 +14,18 @@ public class MyThread extends Thread{
 
     final static Logger logger = Logger.getLogger(String.valueOf(MyThread.class));
     final int CAPACITY = 10;
-    private static Semaphore mutex = new Semaphore(10);
+    private  Semaphore mutex = new Semaphore(1);
+    private  Semaphore mutex2 = new Semaphore(1);
     int line=0,next=0;
-    int name;
     JSONObject [] msg = new JSONObject[CAPACITY];
 
     /**
-     * this is a constructor method which changes the thread's priority with the given integer argument
+     * this is a constructor method which changes the thread's priority with the given integer argument and it locks the threads at the start so that they'd wait
      * @param threadPriority this is the thread's new priority
      */
-    public MyThread (int threadPriority){
+    public MyThread (int threadPriority) throws InterruptedException {
         Thread.currentThread().setPriority(threadPriority);
+        mutex2.acquire();
     }
 
     /**
@@ -33,27 +34,37 @@ public class MyThread extends Thread{
     @Override
     public void run() {
         while(true){
-            while(line==0){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    logger.warning("Error on Thread -> " + e);
-                }
+            try {
+                mutex2.acquire();// instead of waiting in a loop, I make the thread wait in a mutex so that there won't be a busy wait. ??
+            } catch (InterruptedException e) {
+                logger.warning("Error on thread-mutex in waiting for a interrupt-> " + e);
             }
             writeMessageToFile(msg[next]);
             insertIntoDatabase(msg[next]);
-            next = (next+1)%CAPACITY;
-            line--;
+            try {
+                mutex.acquire();
+                next = (next+1)%CAPACITY;
+                line--;
+                if(line!=0){// if there are more to process in the queue it wont stop, if there isn't any message in the queue it will lock the mutex
+                    mutex2.release();
+                }
+                mutex.release();
+            } catch (InterruptedException e) {
+                logger.warning("Error on thread-mutex while checking the next message in the queue-> " + e);
+            }
         }
     }
 
     /**
-     * this method checks, is the queue full or not, if it is full then it waits then it adds a new message to the queue
+     * this method checks, is the queue full or not, if it is full then it waits. when it is not full, it adds a new message to the queue
      */
-    public void addIntoQueue(JSONObject msg)  {
-        while(line>=CAPACITY);
+    public void addIntoQueue(JSONObject msg) throws InterruptedException {
+        while(line>=CAPACITY); // it waits when the capacity is full
         this.msg[next+line] = msg;
+        mutex.acquire();
         this.line++;
+        mutex.release();
+        mutex2.release();// it interrupt the thread if it was waiting on the mutex
     }
 
     /**
