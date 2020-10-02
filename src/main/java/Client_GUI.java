@@ -23,14 +23,11 @@ public class Client_GUI extends JFrame{
     private JPanel mainPanel;
     final static Logger logger = Logger.getLogger(String.valueOf(Client_GUI.class));
 
-
     public Client_GUI() {
         sendButton.addActionListener(new ActionListener() {
 
-
             /**
              * This method listens the button. When pressed, it sends a message to server or it asks user to fill empty fields
-             * @param e
              */
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -51,8 +48,6 @@ public class Client_GUI extends JFrame{
                 }else{
                     JOptionPane.showMessageDialog(null,"Please fill out the necessary fields.");
                 }
-
-
             }
 
             /**
@@ -78,7 +73,6 @@ public class Client_GUI extends JFrame{
              */
             private void sendTheMessage(JSONObject msg) {
                 int port = 49999;
-
                 try{
                     Socket s = new Socket("localhost",port);
                     OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
@@ -105,17 +99,13 @@ public class Client_GUI extends JFrame{
              * this method checks the field, if it finds necessery fields empty it returns false, else it returns ture
              */
             private boolean fieldChecker() {
-                if(senderField.getText()!=null && receiverField.getText()!=null && (priorityField.getSelectedIndex()!=0)){
-                    return true;
-                }
-                return false;
+                return senderField.getText() != null && receiverField.getText() != null && (priorityField.getSelectedIndex() != 0);
             }
         });
     }
 
     /**
      * this method sets the frame for the program
-     * @param args
      */
     public static void main(String[] args) {
         JFrame frame = new JFrame("App");
@@ -123,6 +113,5 @@ public class Client_GUI extends JFrame{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
     }
 }

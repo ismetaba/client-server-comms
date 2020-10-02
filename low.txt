@@ -1,0 +1,2 @@
+e,e,e,e,e,low
+w,w,w,w,wwww,low

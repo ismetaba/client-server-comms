@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 /**
  * This class listens a specific port then, when it receives a message, it writes it to a file and inserts it to a database according to its priority
- *
  * @author ismet abacı
  */
 public class Server {
@@ -14,8 +13,6 @@ public class Server {
 
     /**
      * this method listens for a message on a port and process received messages
-     *
-     * @param args
      */
     public static void main(String[] args) {
         int port = 49999;
@@ -29,10 +26,6 @@ public class Server {
 
     /**
      * This method listens the given port as long as it runs. when it receives a message, it processes it
-     *
-     * @param portNumber
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     private static void runServer(int portNumber) throws IOException, ClassNotFoundException, InterruptedException {
         ServerSocket ss = new ServerSocket(portNumber);
@@ -40,36 +33,41 @@ public class Server {
         BufferedReader in;
         JSONObject msg = new JSONObject();
         String input;
+        int numberOfThreads = 3,threadIndex;
+        MyThread [] myThreads = new MyThread[numberOfThreads];
 
-        MyThread highThread = new MyThread(Thread.MIN_PRIORITY);
-        MyThread normalThread = new MyThread(Thread.NORM_PRIORITY);
-        MyThread lowThread = new MyThread(Thread.MAX_PRIORITY);
+        for (int i=0;i<numberOfThreads;i++){
+            myThreads[i] = new MyThread();
+            myThreads[i].start();
+        }
+        myThreads[0].setPriority(Thread.MAX_PRIORITY);
+        myThreads[1].setPriority(Thread.NORM_PRIORITY);
+        myThreads[2].setPriority(Thread.MIN_PRIORITY);
 
-        highThread.start();
-        normalThread.start();
-        lowThread.start();
-
-        while (true) { //Question: is this the right usage??
+        while (true) {
             s = ss.accept();
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             if ((input = in.readLine()) != null) {
                 msg = new JSONObject(input);
-                switch (msg.get("priority").toString()){
-                    case "high":
-                        highThread.addIntoQueue(msg);// adds a new message to the thread's queue
-                        break;
-                    case "normal":
-                        normalThread.addIntoQueue(msg);
-                        break;
-                    case "low":
-                        lowThread.addIntoQueue(msg);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + msg.get("priority").toString());
-                }
+                threadIndex = getMessagePriority(msg.get("priority").toString());
+                myThreads[threadIndex].addIntoQueue(msg);//msg.get("priority") --> high=2, normal=1, low=0
             } else {
                 logger.warning("Error on server -> Received message is null");
             }
+        }
+    }
+
+    /**
+     * @return it return an index number of the priority for the Thread array
+     */
+    private static int getMessagePriority(String priority) {
+        switch (priority){
+            case "high":
+                return 2;
+            case "normal":
+                return 1;
+            default:
+                return 0;
         }
     }
 }
