@@ -11,8 +11,6 @@ import java.util.logging.Logger;
  * @author ismet abacı
  */
 public class Client_GUI extends JFrame{
-
-
     private JTextField senderField;
     private JTextField receiverField;
     private JTextField ccField;

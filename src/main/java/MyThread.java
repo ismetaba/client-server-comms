@@ -30,7 +30,7 @@ public class MyThread extends Thread{
     public void run() {
         while(true){
             lockMutex(mutexForQueue);
-            processTheMessage(msg[next]);
+            processTheMessage();
             lockMutex(mutexForLineUpdate);
             next = (next+1)%CAPACITY;
             line--;
@@ -83,9 +83,8 @@ public class MyThread extends Thread{
 
     /**
      * This method does the processes
-     * @param jsonObject
      */
-    private void processTheMessage(JSONObject jsonObject) {
+    private void processTheMessage() {
         Database db = new Database("jdbc:mysql://192.168.64.2:3306/","messages","root2","111");
         db.insertIntoDatabase(msg[next]);
         writeMessageToFile(msg[next]);

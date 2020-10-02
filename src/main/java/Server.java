@@ -27,11 +27,11 @@ public class Server {
     /**
      * This method listens the given port as long as it runs. when it receives a message, it processes it
      */
-    private static void runServer(int portNumber) throws IOException, ClassNotFoundException, InterruptedException {
+    private static void runServer(int portNumber) throws IOException, InterruptedException {
         ServerSocket ss = new ServerSocket(portNumber);
         Socket s;
         BufferedReader in;
-        JSONObject msg = new JSONObject();
+        JSONObject msg;
         String input;
         int numberOfThreads = 3,threadIndex;
         MyThread [] myThreads = new MyThread[numberOfThreads];
