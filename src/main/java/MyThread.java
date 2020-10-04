@@ -58,9 +58,10 @@ public class MyThread extends Thread{
         while(line>=CAPACITY); // it waits when the capacity is full
         this.msg[next+line] = msg;
         mutexForLineUpdate.acquire();
+        if(this.line==0)
+            mutexForQueue.release();// it interrupt the thread if it was waiting on the mutex
         this.line++;
         mutexForLineUpdate.release();
-        mutexForQueue.release();// it interrupt the thread if it was waiting on the mutex
     }
 
 

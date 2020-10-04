@@ -67,7 +67,6 @@ public class Client_GUI extends JFrame{
 
             /**
              * This method sends a message to server.
-             * @param msg
              */
             private void sendTheMessage(JSONObject msg) {
                 int port = 49999;

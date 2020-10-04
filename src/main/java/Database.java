@@ -45,7 +45,7 @@ public class Database {
             preparedStatement.setString(6, msg.get("priority").toString());
             preparedStatement.executeUpdate();
         }catch(Exception e){
-            logger.warning("Error on client-db conn -> " + e);
+                logger.warning("Error on client-db conn -> " + e);
         }
     }
 }
