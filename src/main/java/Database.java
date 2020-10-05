@@ -8,6 +8,8 @@ import java.util.logging.Logger;
  * @author ismet abacı
  */
 public class Database {
+    // GG:
+    // Neden private değiller ?
     final static Logger logger = Logger.getLogger(String.valueOf(MyThread.class));
     String url ;
     String databaseName ;
@@ -33,7 +35,11 @@ public class Database {
     public void insertIntoDatabase(JSONObject msg){
         try{
             String tableName = (String) msg.get("priority"); //get table name according to the message's priority
+            // GG:
+            // Tek satır da olsa blok açılmalı
             if (tableName == null) return;
+            // GG:
+            // Her seferinde bağlantı açmak mantıklı değil. Başka ne yöntem kullanılabilir ?
             connect = DriverManager.getConnection(url + databaseName +"?user="+ userName +"&password=" + password); //WARNING: I used xampp for the db Connection
             String sql = "insert into " + tableName + " (id,sender,receiver,subject,cc,message,priority) values (default, ?, ?, ?, ? , ?, ?);";
             preparedStatement = connect.prepareStatement(sql);
@@ -44,7 +50,10 @@ public class Database {
             preparedStatement.setString(5, msg.get("message").toString());
             preparedStatement.setString(6, msg.get("priority").toString());
             preparedStatement.executeUpdate();
+            
         }catch(Exception e){
+            // GG:
+            // Indent kaymış.
                 logger.warning("Error on client-db conn -> " + e);
         }
     }
