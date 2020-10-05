@@ -34,7 +34,7 @@ public class MyThread extends Thread{
             lockMutex(mutexForLineUpdate);
             next = (next+1)%CAPACITY;
             line--;
-            if(line!=0)// if there are more to process in the queue it wont stop, if there isn't any message in the queue it will lock the mutex
+            if(line!=0)// if there are more to process in the queue it will release so that thread won't wait. if there isn't any message in the queue it won't release the mutex, so that thread will wait
                 mutexForQueue.release();
             mutexForLineUpdate.release();
         }
