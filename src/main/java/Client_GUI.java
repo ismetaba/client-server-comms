@@ -1,3 +1,5 @@
+// GG:
+// Paket yok. Default paket kullanımı yerine belirgin bir paket altında olmalı tüm kod.
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -10,6 +12,9 @@ import java.util.logging.Logger;
 /**
  * @author ismet abacı
  */
+
+// GG:
+// Sınıf isimlerinde _ gibi karakterler genellikle C# stilidir ve Java konvensiyonunda kullanılmazlar.
 public class Client_GUI extends JFrame{
     private JTextField senderField;
     private JTextField receiverField;
@@ -31,6 +36,9 @@ public class Client_GUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
 
                 if(fieldChecker()){
+                    // GG:
+                    // Mesaj nesnesinin oluşturulması bir başka metotta olsa 
+                    // okunabilirlik ve cohesion açısından daha iyi olur.
                     JSONObject msg = new JSONObject();
                     msg.put("sender",senderField.getText());
                     msg.put("receiver",receiverField.getText());
@@ -69,7 +77,12 @@ public class Client_GUI extends JFrame{
              * This method sends a message to server.
              */
             private void sendTheMessage(JSONObject msg) {
+                // GG:
+                // Her seferinde bağlantı açıp server'ın yanıtını beklemeden kapatıyorsun. Bunun yerine bağlantıyı
+                // bir kere açmalı ve server ile iletişim kapsamında devamlı açık tutmalısın.
                 int port = 49999;
+                // GG:
+                // try, catch, for vs keywordler öncesi boşluk olmalı
                 try{
                     Socket s = new Socket("localhost",port);
                     OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
@@ -105,6 +118,8 @@ public class Client_GUI extends JFrame{
      * this method sets the frame for the program
      */
     public static void main(String[] args) {
+        // GG:
+        // Frame burada değil, Client_GUI içinde oluşturulmalı.
         JFrame frame = new JFrame("App");
         frame.setContentPane(new Client_GUI().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
