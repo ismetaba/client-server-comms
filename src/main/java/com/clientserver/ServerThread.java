@@ -10,17 +10,19 @@ import java.util.logging.Logger;
  * @author Ismet Abaci
  */
 public class ServerThread extends Thread{
-    final static Logger logger = Logger.getLogger(String.valueOf(ServerThread.class));
-    final int CAPACITY = 10;
+    final private static Logger logger = Logger.getLogger(String.valueOf(ServerThread.class));
+    final private int CAPACITY = 10;
     private final Semaphore mutexForLineUpdate = new Semaphore(1);
     private final Semaphore mutexForQueue = new Semaphore(1);
-    int line=0,next=0;
-    JSONObject [] msg = new JSONObject[CAPACITY];
+    private int line=0,next=0;
+    private Database db;
+    private JSONObject [] msg = new JSONObject[CAPACITY];
 
     /**
      * This constructor locks the threads when initialized, so that they'd wait on a empty queue
      */
     public ServerThread () throws InterruptedException {
+        db = new Database("jdbc:mysql://192.168.64.2:3306/","messages","root2","111");
         mutexForQueue.acquire();
     }
 
@@ -88,7 +90,6 @@ public class ServerThread extends Thread{
      * This method does the processes for the given message
      */
     private void processTheMessage() {
-        Database db = new Database("jdbc:mysql://192.168.64.2:3306/","messages","root2","111");
         db.insertIntoDatabase(msg[next]);
         writeMessageToFile(msg[next]);
     }

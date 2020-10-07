@@ -45,7 +45,7 @@ public class Database {
                 return;
             }
             if(!isConnected){
-                connectToDatabase();
+                //connectToDatabase();
                 if(!isConnected){
                     logger.warning("not connected to the database");
                     return;
