@@ -47,7 +47,6 @@ public class ServerThread extends Thread{
         }
     }
 
-
     /**
      * This method checks, is the queue full or not, if it is full then it waits. when it is not full, it adds a new message to the queue
      */
@@ -73,18 +72,20 @@ public class ServerThread extends Thread{
     private static void writeMessageToFile(JSONObject m){
         String data = m.get("sender").toString() + "," + m.get("receiver").toString() + "," + m.get("subject").toString() + "," + m.get("cc").toString() + "," + m.get("message").toString() + "," + m.get("priority").toString();
         String fileName = m.get("priority").toString() + ".txt";
+
         try{
             FileWriter fw = new FileWriter(fileName,true);
             PrintWriter printWriter = new PrintWriter(fw);
             printWriter.println(data);
             printWriter.close();
+
         }catch(Exception e ){
             logger.warning("Error on server-fileWriter -> " + e);
         }
     }
 
     /**
-     * This method does the processes
+     * This method does the processes for the given message
      */
     private void processTheMessage() {
         Database db = new Database("jdbc:mysql://192.168.64.2:3306/","messages","root2","111");

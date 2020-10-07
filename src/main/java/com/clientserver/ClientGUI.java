@@ -32,8 +32,6 @@ public class ClientGUI extends JFrame{
         setSize(300,400);
         setTitle("Client");
 
-
-
         final Socket s;
         try {
             s = new Socket("localhost",port);
@@ -41,6 +39,7 @@ public class ClientGUI extends JFrame{
             logger.warning("Connection Problem");
             return;
         }
+
         sendButton.addActionListener(new ActionListener() {
 
             /**
@@ -61,8 +60,8 @@ public class ClientGUI extends JFrame{
 
             /**
              * This method receives index of selected priority box, the it returns the priority level
-             * @param selectedIndex this is the selected index of priority box
-             * @return the priority
+             * @param selectedIndex This is the selected index of priority box
+             * @return The priority of the message
              */
             private String getPriority(int selectedIndex) {
                 switch (selectedIndex){
@@ -91,7 +90,7 @@ public class ClientGUI extends JFrame{
             }
 
             /**
-             * this method clears the fields after sending a message to server
+             * This method clears the fields after sending a message to server
              */
             private void emptyTheFields() {
                 senderField.setText(null);
@@ -103,14 +102,14 @@ public class ClientGUI extends JFrame{
             }
 
             /**
-             * this method checks the field, if it finds necessary fields empty it returns false, else it returns ture
+             * This method checks the field, if it finds necessary fields empty it returns false, else it returns ture
              */
             private boolean fieldChecker() {
                 return senderField.getText() != null && receiverField.getText() != null && (priorityField.getSelectedIndex() != 0);
             }
 
             /**
-             * @return it returns the message as JSONObject
+             * @return It returns the message as JSONObject
              */
             private JSONObject getMessageAsJSONObject() {
                 JSONObject m = new JSONObject();
@@ -126,7 +125,7 @@ public class ClientGUI extends JFrame{
     }
 
     /**
-     * this method sets the frame for the program
+     * This method sets the frame for the program
      */
     public static void main(String[] args) throws IOException {
         ClientGUI app = new ClientGUI();
