@@ -17,7 +17,6 @@ public class ClientGUI extends JFrame{
     static JFrame frame;
     private JTextField senderField;
     private static int port = 49999;
-    private Socket s;
     private JTextField receiverField;
     private JTextField ccField;
     private JTextField subjectField;
@@ -29,11 +28,17 @@ public class ClientGUI extends JFrame{
 
     public ClientGUI()  {
 
+        add(mainPanel);
+        setSize(300,400);
+        setTitle("Client");
+
+
+
         final Socket s;
         try {
             s = new Socket("localhost",port);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warning("Connection Problem");
             return;
         }
         sendButton.addActionListener(new ActionListener() {
@@ -124,11 +129,7 @@ public class ClientGUI extends JFrame{
      * this method sets the frame for the program
      */
     public static void main(String[] args) throws IOException {
-        frame = new JFrame("App");
-        frame.setContentPane(new ClientGUI().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-
+        ClientGUI app = new ClientGUI();
+        app.setVisible(true);
     }
 }
