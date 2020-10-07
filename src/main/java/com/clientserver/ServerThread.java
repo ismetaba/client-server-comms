@@ -10,8 +10,8 @@ import java.util.logging.Logger;
  * @author Ismet Abaci
  */
 public class ServerThread extends Thread{
-    final private static Logger logger = Logger.getLogger(String.valueOf(ServerThread.class));
-    final private int CAPACITY = 10;
+    private final static Logger logger = Logger.getLogger(String.valueOf(ServerThread.class));
+    private final int CAPACITY = 10;
     private final Semaphore mutexForLineUpdate = new Semaphore(1);
     private final Semaphore mutexForQueue = new Semaphore(1);
     private int line=0,next=0;
@@ -64,7 +64,6 @@ public class ServerThread extends Thread{
         }catch(Exception e){
             logger.warning("Error on thread.addIntoQueue mutex lock -> " + e);
         }
-
     }
 
     /**

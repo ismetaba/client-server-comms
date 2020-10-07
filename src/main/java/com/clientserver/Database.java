@@ -19,7 +19,7 @@ public class Database {
     private String userName;
     private String password;
     private Connection connect;
-    private boolean isConnected=false;
+    private boolean isConnected = false;
 
     /**
      * This contractor sets the db login credentials then it tries to connect it
@@ -44,12 +44,10 @@ public class Database {
                 logger.warning("Priority can not be empty");
                 return;
             }
+
             if(!isConnected){
-                //connectToDatabase();
-                if(!isConnected){
-                    logger.warning("not connected to the database");
-                    return;
-                }
+                logger.warning("not connected to the database");
+                return;
             }
 
             String sql = "insert into " + tableName + " (id,sender,receiver,subject,cc,message,priority) values (default, ?, ?, ?, ? , ?, ?);";

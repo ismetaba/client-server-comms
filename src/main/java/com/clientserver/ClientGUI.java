@@ -24,7 +24,7 @@ public class ClientGUI extends JFrame{
     private JButton sendButton;
     private JTextArea messageField;
     private JPanel mainPanel;
-    final static Logger logger = Logger.getLogger(String.valueOf(ClientGUI.class));
+    private final static Logger logger = Logger.getLogger(String.valueOf(ClientGUI.class));
 
     public ClientGUI()  {
 

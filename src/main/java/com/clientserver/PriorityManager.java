@@ -13,7 +13,7 @@ public class PriorityManager {
     private final static Logger logger = Logger.getLogger(String.valueOf(Server.class));
     private final int numberOfThreads = 3;
     private final ServerThread[] serverThreads = new ServerThread[numberOfThreads];
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfThreads);
+    private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfThreads);
 
     /**
      * This method reads the priority of the message and it puts the message to a thread's queue according to its priority
