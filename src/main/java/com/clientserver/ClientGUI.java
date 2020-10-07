@@ -1,17 +1,23 @@
+package com.clientserver;
+
 import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.OutputStreamWriter;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Logger;
 
 /**
  * @author ismet abacı
  */
-public class Client_GUI extends JFrame{
+public class ClientGUI extends JFrame{
+    static JFrame frame;
     private JTextField senderField;
+    private static int port = 49999;
+    private Socket s;
     private JTextField receiverField;
     private JTextField ccField;
     private JTextField subjectField;
@@ -19,9 +25,17 @@ public class Client_GUI extends JFrame{
     private JButton sendButton;
     private JTextArea messageField;
     private JPanel mainPanel;
-    final static Logger logger = Logger.getLogger(String.valueOf(Client_GUI.class));
+    final static Logger logger = Logger.getLogger(String.valueOf(ClientGUI.class));
 
-    public Client_GUI() {
+    public ClientGUI()  {
+
+        final Socket s;
+        try {
+            s = new Socket("localhost",port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
         sendButton.addActionListener(new ActionListener() {
 
             /**
@@ -31,16 +45,8 @@ public class Client_GUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
 
                 if(fieldChecker()){
-                    JSONObject msg = new JSONObject();
-                    msg.put("sender",senderField.getText());
-                    msg.put("receiver",receiverField.getText());
-                    msg.put("cc",ccField.getText());
-                    msg.put("subject",subjectField.getText());
-                    msg.put("message",messageField.getText());
-                    msg.put("priority",getPriority(priorityField.getSelectedIndex()));
-
+                    JSONObject msg = getMessageAsJSONObject();
                     sendTheMessage(msg);
-
                     JOptionPane.showMessageDialog(null,"Mail is sent.");
                     emptyTheFields();
                 }else{
@@ -69,12 +75,11 @@ public class Client_GUI extends JFrame{
              * This method sends a message to server.
              */
             private void sendTheMessage(JSONObject msg) {
-                int port = 49999;
+
                 try{
-                    Socket s = new Socket("localhost",port);
-                    OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
-                    out.write(msg.toString());
-                    out.close();
+                    DataOutputStream out = new DataOutputStream(s.getOutputStream());
+                    out.writeUTF(msg.toString());
+                    logger.info("OK");
                 }catch(Exception e){
                     logger.warning("Error on client -> " + e);
                 }
@@ -93,10 +98,24 @@ public class Client_GUI extends JFrame{
             }
 
             /**
-             * this method checks the field, if it finds necessery fields empty it returns false, else it returns ture
+             * this method checks the field, if it finds necessary fields empty it returns false, else it returns ture
              */
             private boolean fieldChecker() {
                 return senderField.getText() != null && receiverField.getText() != null && (priorityField.getSelectedIndex() != 0);
+            }
+
+            /**
+             * @return it returns the message as JSONObject
+             */
+            private JSONObject getMessageAsJSONObject() {
+                JSONObject m = new JSONObject();
+                m.put("sender",senderField.getText());
+                m.put("receiver",receiverField.getText());
+                m.put("cc",ccField.getText());
+                m.put("subject",subjectField.getText());
+                m.put("message",messageField.getText());
+                m.put("priority",getPriority(priorityField.getSelectedIndex()));
+                return m;
             }
         });
     }
@@ -104,11 +123,12 @@ public class Client_GUI extends JFrame{
     /**
      * this method sets the frame for the program
      */
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("App");
-        frame.setContentPane(new Client_GUI().mainPanel);
+    public static void main(String[] args) throws IOException {
+        frame = new JFrame("App");
+        frame.setContentPane(new ClientGUI().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
     }
 }
